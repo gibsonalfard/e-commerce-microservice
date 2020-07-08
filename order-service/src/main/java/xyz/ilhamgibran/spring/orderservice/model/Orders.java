@@ -13,15 +13,15 @@ public class Orders {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int order_id;
     private Date order_date;
-    private int product_id;
+    private double amount;
 
     public Orders(){
         super();
     }
 
-    public Orders(Date order_date, int proList){
+    public Orders(Date order_date, double amount){
         setOrder_date(order_date);
-        setProduct_id(proList);
+        setAmount(amount);
     }
 
     public int getOrder_id() {
@@ -40,11 +40,11 @@ public class Orders {
         this.order_date = order_date;
     }
 
-    public int getProduct_id() {
-        return product_id;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setProduct_id(int product_id) {
-        this.product_id = product_id;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 }
