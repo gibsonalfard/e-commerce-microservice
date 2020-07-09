@@ -19,3 +19,16 @@ spring:
       port: 27017
       database: products
       collections: products
+  cloud:
+    stream:
+      default-binder: kafka
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
+      bindings:
+        input:
+          binder: kafka
+          destination: cart-topics
+          content-type: application/json
+          group: input-group-1
