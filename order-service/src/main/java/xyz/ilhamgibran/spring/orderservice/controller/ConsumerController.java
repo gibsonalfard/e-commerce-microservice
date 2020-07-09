@@ -27,20 +27,49 @@ public class ConsumerController {
 
     private static final Logger logger = LoggerFactory.getLogger(ConsumerController.class);
 
-    @StreamListener(target = Sink.INPUT)
-    public void stringConsume(String message){
+    // Method for Insert Message
+    @StreamListener(target = Sink.INPUT, condition = "headers['messageType']=='INSERT'")
+    public void consumeInsert(String message){
         try {
             double total = 0;
             Products prod = new ObjectMapper().readValue(message, Products.class);
             logger.info("This is ID of Data : " + prod.getId());
             productsRepository.save(prod);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
 
-//            // Loop Add Product
-//            productsList.add(prod);
-//            total += prod.getPrice();
-//
-//            productsList.add(prod);
-//            total += prod.getPrice();
+    // Method for Update message
+    @StreamListener(target = Sink.INPUT, condition = "headers['messageType']=='UPDATE'")
+    public void consumeUpdate(String message){
+        try {
+            Products prod = new ObjectMapper().readValue(message, Products.class);
+            logger.info("This Update ID of Data : " + prod.getId());
+            Products dbProd = productsRepository.getProductById(prod.getId());
+
+            if(dbProd != null){
+                dbProd.setName(prod.getName());
+                dbProd.setCurrency(prod.getCurrency());
+                dbProd.setDescription(prod.getDescription());
+                dbProd.setImage(prod.getImage());
+                dbProd.setPrice(prod.getPrice());
+                dbProd.setUrl(prod.getUrl());
+
+                productsRepository.save(dbProd);
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method for Delete message
+    @StreamListener(target = Sink.INPUT, condition = "headers['messageType']=='DELETE'")
+    public void consumeDelete(String message){
+        try {
+            Products prod = new ObjectMapper().readValue(message, Products.class);
+            logger.info("This Delete ID of Data : " + prod.getId());
+            productsRepository.deleteById(prod.getId());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
