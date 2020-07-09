@@ -28,6 +28,20 @@ public class Product {
         _id = id;
     }
 
+    public ObjectId get_id() { return this._id; }
+
+    public String getName() { return this.name; }
+
+    public String getDescription() { return this.description; }
+
+    public float getPrice() { return this.price; }
+
+    public String getCurrency() { return this.currency; }
+
+    public String getImage() { return this.image; }
+
+    public String getUrl() { return this.url; }
+
     @Override
     public String toString() {
         return "Product [id = " + _id.toHexString() + " name = " + name + "]";

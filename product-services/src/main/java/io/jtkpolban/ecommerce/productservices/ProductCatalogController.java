@@ -62,13 +62,15 @@ public class ProductCatalogController {
     @PostMapping("/products/")
     public @ResponseBody
     String insertProduct(@RequestBody Product newProduct){
+        ProductData productData = new ProductData();
         this.productRepository.save(newProduct)
-        .subscribe(product ->
-                producer.getSource()
-                        .output()
-                        .send(MessageBuilder.withPayload(product)
-                                .setHeader("type", "product-insert")
-                                .build()));
+        .subscribe(productData::getProductData);
+
+        producer.getSource()
+                .output()
+                .send(MessageBuilder.withPayload(productData)
+                        .setHeader("type", "product-insert")
+                        .build());
 
         return "New Product Detail: " + newProduct.toString() ;
     }
