@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import xyz.ilhamgibran.spring.orderservice.model.Products;
 
-public interface ProductsRepository extends CrudRepository<Products, Integer> {
-    @Query(value="SELECT * FROM products WHERE id = ?1", nativeQuery = true)
-    public Products getProductById(int id);
+public interface ProductsRepository extends CrudRepository<Products, String> {
+    @Query(value="SELECT * FROM products WHERE _id = ?1", nativeQuery = true)
+    public Products getProductById(String id);
 }

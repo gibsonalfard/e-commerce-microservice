@@ -8,9 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class Products{
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
-
+    private String _id;
     private String name;
     private String description;
     private float price;
@@ -20,14 +18,6 @@ public class Products{
 
     public Products(){
         super();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -76,5 +66,13 @@ public class Products{
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getId() {
+        return _id;
+    }
+
+    public void setId(String _id) {
+        this._id = _id;
     }
 }
