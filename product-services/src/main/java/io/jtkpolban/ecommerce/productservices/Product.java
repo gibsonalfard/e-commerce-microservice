@@ -19,7 +19,7 @@ public class Product {
     private String currency;
     private String image;
     private String url;
-//    private int stock;
+    private int hit;
 
 //    @Field("published") //gunakan untuk different field name
 //    private LocalDate publicationDate;

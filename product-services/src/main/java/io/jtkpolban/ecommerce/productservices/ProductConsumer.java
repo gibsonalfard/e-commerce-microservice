@@ -24,9 +24,10 @@ public class ProductConsumer {
         logger.info("Receive a String Message: "+message);
         try {
             Product pd = new ObjectMapper().readValue(message, Product.class);
-            logger.info("ID: " +     pd.get_id());
-            //logger.info("Stock: " + pd.getStock());
-            //this.productRepository.save(pd);
+            logger.info("ID: " + pd.get_id());
+            pd.setHit(pd.getHit()+1);
+            this.productRepository.save(pd);
+            logger.info("Hit Product Bertambah!");
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
