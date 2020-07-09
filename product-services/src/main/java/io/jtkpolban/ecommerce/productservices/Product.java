@@ -30,7 +30,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product [id = " + _id + " name = " + name + "]";
+        return "Product [id = " + _id.toHexString() + " name = " + name + "]";
     }
 
 }
