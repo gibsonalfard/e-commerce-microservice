@@ -64,7 +64,7 @@ public class ProductCatalogController {
     String insertProduct(@RequestBody Product newProduct){
         ProductData productData = new ProductData();
         this.productRepository.save(newProduct)
-        .subscribe(productData::getProductData);
+        .subscribe(productData::setProductData);
 
         producer.getSource()
                 .output()

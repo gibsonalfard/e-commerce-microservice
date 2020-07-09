@@ -23,7 +23,13 @@ public class ProductData {
         this.url = productMongoDB.getUrl();
     }
 
-    public ProductData getProductData(Product productMongoDB) {
-        return new ProductData(productMongoDB);
+    public void setProductData(Product productMongoDB) {
+        this._id = productMongoDB.get_id().toHexString();
+        this.name = productMongoDB.getName();
+        this.description = productMongoDB.getDescription();
+        this.price = productMongoDB.getPrice();
+        this.currency = productMongoDB.getCurrency();
+        this.image = productMongoDB.getImage();
+        this.url = productMongoDB.getUrl();
     }
 }
