@@ -28,7 +28,7 @@ public class ConsumerController {
     private static final Logger logger = LoggerFactory.getLogger(ConsumerController.class);
 
     // Method for Insert Message
-    @StreamListener(target = Sink.INPUT, condition = "headers['messageType']=='INSERT'")
+    @StreamListener(target = Sink.INPUT, condition = "headers['type']=='product-insert'")
     public void consumeInsert(String message){
         try {
             double total = 0;
@@ -41,7 +41,7 @@ public class ConsumerController {
     }
 
     // Method for Update message
-    @StreamListener(target = Sink.INPUT, condition = "headers['messageType']=='UPDATE'")
+    @StreamListener(target = Sink.INPUT, condition = "headers['type']=='product-update'")
     public void consumeUpdate(String message){
         try {
             Products prod = new ObjectMapper().readValue(message, Products.class);
@@ -64,7 +64,7 @@ public class ConsumerController {
     }
 
     // Method for Delete message
-    @StreamListener(target = Sink.INPUT, condition = "headers['messageType']=='DELETE'")
+    @StreamListener(target = Sink.INPUT, condition = "headers['type']=='product-delete'")
     public void consumeDelete(String message){
         try {
             Products prod = new ObjectMapper().readValue(message, Products.class);
