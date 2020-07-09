@@ -46,6 +46,13 @@ public class Cart implements Serializable {
     public void setTotal(float total) {
         this.total = total;
     }
+	
+	public void insertDiscount(float discount){
+		this.total -= discount;
+		if (this.total <= 0) {
+			this.total = 0;
+		}
+	}
 
     public String getCurrency() {
         return currency;
