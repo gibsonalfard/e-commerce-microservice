@@ -42,6 +42,8 @@ public class Product {
 
     public String getUrl() { return this.url; }
 
+    public String get_stringId() { return this._id.toHexString(); }
+
     @Override
     public String toString() {
         return "Product [id = " + _id.toHexString() + " name = " + name + "]";

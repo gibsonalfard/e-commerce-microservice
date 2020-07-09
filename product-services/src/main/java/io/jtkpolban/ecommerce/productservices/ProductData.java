@@ -14,7 +14,7 @@ public class ProductData {
     public ProductData() {}
 
     public ProductData(Product productMongoDB) {
-        this._id = productMongoDB.get_id().toHexString();
+        this._id = productMongoDB.get_stringId();
         this.name = productMongoDB.getName();
         this.description = productMongoDB.getDescription();
         this.price = productMongoDB.getPrice();
@@ -24,7 +24,7 @@ public class ProductData {
     }
 
     public void setProductData(Product productMongoDB) {
-        this._id = productMongoDB.get_id().toHexString();
+        this._id = productMongoDB.get_stringId();
         this.name = productMongoDB.getName();
         this.description = productMongoDB.getDescription();
         this.price = productMongoDB.getPrice();
