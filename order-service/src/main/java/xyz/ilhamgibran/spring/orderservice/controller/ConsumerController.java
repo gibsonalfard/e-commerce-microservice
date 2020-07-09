@@ -40,6 +40,13 @@ public class ConsumerController {
         return prod;
     }
 
+    private ObjectId setObjFromString(String message) throws JsonProcessingException {
+        String msgSub = message.substring(7,70);
+        ObjectId obj = new ObjectMapper().readValue(msgSub, ObjectId.class);
+        System.out.println(obj == null ? "NULL lagi" : obj.getTimestamp());
+        return obj;
+    }
+
     // Method for Insert Message
     @StreamListener(target = Sink.INPUT, condition = "headers['type']=='product-insert'")
     public void consumeInsert(String message){
@@ -48,15 +55,9 @@ public class ConsumerController {
 //            {"_id":{"timestamp":1594329363,"date":"2020-07-09T21:16:03.000+00:00"}
             // Object ID cannot be mapped, so i separate ObjectId Mapping
             if(mes.getId() == null){
-                String msgSub = message.substring(7,70);
-                ObjectId obj = new ObjectMapper().readValue(msgSub, ObjectId.class);
-                System.out.println(obj == null ? "NULL lagi" : obj.getTimestamp());
-
-                logger.info("This is Name of Data : " + msgSub);
-                mes.setId(obj);
+                mes.setId(setObjFromString(message));
             }
             System.out.println(mes.getId() == null ? "null" : mes.getId().getTimestamp());
-
             Products prod = this.convertToProduct(mes);
 
             productsRepository.save(prod);
@@ -69,9 +70,11 @@ public class ConsumerController {
     @StreamListener(target = Sink.INPUT, condition = "headers['type']=='product-update'")
     public void consumeUpdate(String message){
         try {
-            Products prod = new ObjectMapper().readValue(message, Products.class);
-            logger.info("This Update ID of Data : " + prod.getId());
-            Products dbProd = productsRepository.getProductById(prod.getId());
+            KafkaMessage prod = new ObjectMapper().readValue(message, KafkaMessage.class);
+            if(prod.getId() == null){
+                prod.setId(setObjFromString(message));
+            }
+            Products dbProd = productsRepository.getProductById(prod.getId().getTimestamp());
 
             if(dbProd != null){
                 dbProd.setName(prod.getName());
@@ -81,6 +84,7 @@ public class ConsumerController {
                 dbProd.setPrice(prod.getPrice());
                 dbProd.setUrl(prod.getUrl());
 
+                logger.info("This is Update of Data : " + dbProd.getId());
                 productsRepository.save(dbProd);
             }
         } catch (JsonProcessingException e) {
@@ -92,9 +96,13 @@ public class ConsumerController {
     @StreamListener(target = Sink.INPUT, condition = "headers['type']=='product-delete'")
     public void consumeDelete(String message){
         try {
-            Products prod = new ObjectMapper().readValue(message, Products.class);
-            logger.info("This Delete ID of Data : " + prod.getId());
-            productsRepository.deleteById(prod.getId());
+            KafkaMessage prod = new ObjectMapper().readValue(message, KafkaMessage.class);
+            if(prod.getId() == null){
+                prod.setId(setObjFromString(message));
+            }
+//            Products prod = new ObjectMapper().readValue(message, Products.class);
+            logger.info("This Delete ID of Data : " + prod.getId().getTimestamp());
+            productsRepository.deleteById(prod.getId().getTimestamp());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
