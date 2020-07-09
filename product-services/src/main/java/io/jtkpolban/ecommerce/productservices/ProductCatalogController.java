@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
+
 
 @RestController
 public class ProductCatalogController {
@@ -62,9 +64,9 @@ public class ProductCatalogController {
     @PostMapping("/products/")
     public @ResponseBody
     String insertProduct(@RequestBody Product newProduct){
-        ProductData productData = new ProductData();
-        this.productRepository.save(newProduct)
-        .subscribe(productData::setProductData);
+        ProductData productData = new ProductData(Objects.requireNonNull(this.productRepository.save(newProduct).block()));
+//        this.productRepository.save(newProduct)
+//        .subscribe(productData::setProductData);
 
         producer.getSource()
                 .output()
