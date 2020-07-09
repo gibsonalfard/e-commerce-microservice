@@ -32,3 +32,8 @@ spring:
           destination: cart-topics
           content-type: application/json
           group: input-group-1
+        output:
+          binder: kafka
+          destination: product-topics
+          group: product-output-group
+          content-type: application/json

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,11 +18,15 @@ public class ProductCatalogController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProductCatalogController.class);
 
+    private ProductProducer producer;
+
     @Autowired
     private final ProductRepository productRepository;
 
-    public ProductCatalogController(ProductRepository productRepository) {
+    public ProductCatalogController(ProductRepository productRepository, ProductProducer producer) {
+        super();
         this.productRepository = productRepository;
+        this.producer = producer;
     }
 
     @RequestMapping("/")
@@ -45,28 +50,94 @@ public class ProductCatalogController {
         return this.productRepository.findById(oid);
     }
 
+//    // tambah, need product, id kosongkan!
+//    @PostMapping("/products/")
+//    public @ResponseBody
+//    Mono<Void> insertProduct(@RequestBody Product product){
+//        return this.productRepository.save(product).then();
+//    }
+
     // tambah, need product, id kosongkan!
+    // lalu kirim ke message broker
     @PostMapping("/products/")
     public @ResponseBody
-    Mono<Void> insertProduct(@RequestBody Product product){
-        return this.productRepository.save(product).then();
+    String insertProduct(@RequestBody Product newProduct){
+        this.productRepository.save(newProduct)
+        .subscribe(product ->
+                producer.getSource()
+                        .output()
+                        .send(MessageBuilder.withPayload(product)
+                                .setHeader("type", "product-insert")
+                                .build()));
+
+        return "New Product Detail: " + newProduct.toString() ;
     }
+
+//    // hapus, by id
+//    @DeleteMapping("/products")
+//    public @ResponseBody
+//    Mono<Void> deleteProduct(@RequestParam String id){
+//        ObjectId oid = new ObjectId(id);
+//        return this.productRepository.deleteById(oid);
+//    }
 
     // hapus, by id
+    // kirimkan product yang di delete nya
     @DeleteMapping("/products")
     public @ResponseBody
-    Mono<Void> deleteProduct(@RequestParam String id){
+    String deleteProduct(@RequestParam String id){
         ObjectId oid = new ObjectId(id);
-        return this.productRepository.deleteById(oid);
+        this.productRepository.findById(oid)
+                .subscribe(product ->
+                        producer.getSource()
+                                .output()
+                                .send(MessageBuilder.withPayload(product)
+                                        .setHeader("type", "product-delete")
+                                        .build()));
+
+        this.productRepository.deleteById(oid);
+        return "Product with ID: " + oid.toString() + " has been successfully deleted";
     }
 
+//    //update product, by id, product body kosongkan id!
+//    @PutMapping("/products")
+//    public @ResponseBody
+//    Mono<Void> updateProduct(@RequestParam String id, @RequestBody Product product){
+//        product.set_id(new ObjectId(id));
+//        return this.productRepository.save(product).then();
+//    }
+
     //update product, by id, product body kosongkan id!
+    //lalu kirim ke message broker
     @PutMapping("/products")
     public @ResponseBody
-    Mono<Void> updateProduct(@RequestParam String id, @RequestBody Product product){
-        product.set_id(new ObjectId(id));
-        return this.productRepository.save(product).then();
+    String updateProduct(@RequestParam String id, @RequestBody Product updatedProduct){
+        updatedProduct.set_id(new ObjectId(id));
+        this.productRepository.save(updatedProduct)
+                .subscribe(product ->
+                        producer.getSource()
+                                .output()
+                                .send(MessageBuilder.withPayload(product)
+                                        .setHeader("type", "product-update")
+                                        .build()));
+
+        return "Updated Product Detail: " + updatedProduct.toString() ;
     }
+
+//    @PostMapping("/products/insert")
+//    public String publishInsertedProduct(@RequestBody Product newProduct) {
+//        this.productRepository.save(newProduct)
+//                .subscribe(product ->
+//                        producer.getSource()
+//                                .output()
+//                                .send(MessageBuilder.withPayload(product)
+//                                        .setHeader("type", "insert-product")
+//                                        .build()));
+//
+//        return newProduct.toString() + "has been successfully inserted";
+//    }
+
+
 
     //default rest error handling
 //    @ExceptionHandler(Exception.class)
