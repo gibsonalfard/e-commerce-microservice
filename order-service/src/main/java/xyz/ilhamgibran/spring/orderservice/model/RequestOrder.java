@@ -1,7 +1,7 @@
 package xyz.ilhamgibran.spring.orderservice.model;
 
 public class RequestOrder {
-    private int productId;
+    private String productId;
     private int qty;
 
     public RequestOrder(){
@@ -16,11 +16,11 @@ public class RequestOrder {
         this.qty = qty;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 }
