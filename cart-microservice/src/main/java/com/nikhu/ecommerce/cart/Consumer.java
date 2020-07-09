@@ -15,17 +15,19 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.logging.Level;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @EnableBinding(Sink.class)
 public class Consumer {
+
     private static final Logger logger = LoggerFactory.getLogger(Consumer.class);
 
     @Autowired
     private CartRepository cartRepository;
-	
+
     @StreamListener(target = Sink.INPUT)
-    public void consume(String message){
-        logger.info("Receive a String Message: "+message);
+    public void consume(String message) {
+        logger.info("Receive a String Message: " + message);
         try {
             Discount disc = new ObjectMapper().readValue(message, Discount.class);
             logger.info("Id Cart:  " + disc.getId());
@@ -36,16 +38,16 @@ public class Consumer {
             java.util.logging.Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-	
+
     @StreamListener(target = Sink.INPUT, condition = "headers['type']=='discount'")
-    public void handle(@Payload Discount message){
+    public void handle(@Payload Discount message) {
         Cart cart = cartRepository.getCartById(message.getId());
         if (cart != null) {
-                cart.insertDiscount(message.getAmount());
+            cart.insertDiscount(message.getAmount());
         }
         logger.info("Cart dengan ID " + message.getId() + " mendapat diskon sebesar Rp." + message.getAmount());
     }
-	/*
+    /*
 
     @StreamListener(target = Sink.INPUT, condition = "headers['type']=='user'")
     public void handleUser(@Payload User usr){
@@ -56,5 +58,5 @@ public class Consumer {
         logger.info("Nama: " + usr.getName());
         logger.info("SKS Selesai: " + usr.getSksTake());
     }
-	*/
+     */
 }
