@@ -1,14 +1,10 @@
 package xyz.ilhamgibran.spring.orderservice.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@Entity
-public class Products{
-    @Id
-    private Long _id;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class KafkaMessage {
+    private ObjectId id;
     private String name;
     private String description;
     private float price;
@@ -16,8 +12,16 @@ public class Products{
     private String image;
     private String url;
 
-    public Products(){
+    public KafkaMessage(){
         super();
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId _id) {
+        this.id = _id;
     }
 
     public String getName() {
@@ -66,13 +70,5 @@ public class Products{
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public Long getId() {
-        return _id;
-    }
-
-    public void setId(Long _id) {
-        this._id = _id;
     }
 }
