@@ -9,6 +9,8 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
 
+import org.springframework.integration.kafka.dsl.Kafka;
+import xyz.ilhamgibran.spring.orderservice.model.KafkaMessage;
 import xyz.ilhamgibran.spring.orderservice.model.OrderProducts;
 import xyz.ilhamgibran.spring.orderservice.model.Orders;
 import xyz.ilhamgibran.spring.orderservice.model.Products;
@@ -27,13 +29,30 @@ public class ConsumerController {
 
     private static final Logger logger = LoggerFactory.getLogger(ConsumerController.class);
 
+    private Products convertToProduct(KafkaMessage km){
+        Products prod = new Products();
+        prod.setId(km.getId().getTimestamp().toString());
+        prod.setName(km.getName());
+        prod.setUrl(km.getUrl());
+        prod.setPrice(km.getPrice());
+        prod.setImage(km.getImage());
+        prod.setDescription(km.getDescription());
+        prod.setCurrency(km.getCurrency());
+
+        return prod;
+    }
+
     // Method for Insert Message
     @StreamListener(target = Sink.INPUT, condition = "headers['type']=='product-insert'")
     public void consumeInsert(String message){
         try {
             double total = 0;
-            Products prod = new ObjectMapper().readValue(message, Products.class);
-            logger.info("This is ID of Data : " + prod.getId());
+//            Products prod = new ObjectMapper().readValue(message, Products.class);
+            KafkaMessage mes = new ObjectMapper().readValue(message, KafkaMessage.class);
+            logger.info("This is ID of Data : " + mes.getId());
+
+            Products prod = this.convertToProduct(mes);
+
             productsRepository.save(prod);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
