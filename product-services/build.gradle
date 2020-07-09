@@ -18,6 +18,7 @@ ext {
 }
 
 dependencies {
+	compile group: 'org.springframework.cloud', name: 'spring-cloud-stream', version: '3.0.6.RELEASE'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
