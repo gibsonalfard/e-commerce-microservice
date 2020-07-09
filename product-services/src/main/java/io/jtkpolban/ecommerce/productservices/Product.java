@@ -19,9 +19,18 @@ public class Product {
     private String currency;
     private String image;
     private String url;
-    
+
+
 //    @Field("published") //gunakan untuk different field name
 //    private LocalDate publicationDate;
 
+    public void set_id(ObjectId id) {
+        _id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Product [id = " + _id + " name = " + name + "]";
+    }
 
 }
