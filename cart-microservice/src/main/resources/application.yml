@@ -10,3 +10,18 @@ eureka:
 # HTTP (Tomcat) server port
 server:
   port: 9002
+
+spring:
+  cloud:
+    stream:
+      default-binder: kafka
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
+      bindings:
+        output:
+          binder: kafka
+          destination: cart-topics
+          content-type: application/json
+          group: input-group-1

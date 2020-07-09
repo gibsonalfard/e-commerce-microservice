@@ -10,6 +10,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.springframework.messaging.support.MessageBuilder;
+
+
 
 @CrossOrigin
 @RestController
@@ -17,8 +20,16 @@ public class CartController extends ResponseEntityExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(CartController.class);
 
+    private CartProducer producer;
+
     @Autowired
     private CartRepository cartRepository;
+
+    public CartController(CartRepository cartRepository, CartProducer producer) {
+        super();
+        this.cartRepository = cartRepository;
+        this.producer = producer;
+    }
 
     @PostConstruct
     public void init() throws IOException {
@@ -37,20 +48,46 @@ public class CartController extends ResponseEntityExceptionHandler {
         return cart;
     }
 
-    @RequestMapping(value = "/cart/{id}", method = RequestMethod.POST)
-    public Cart cart(@PathVariable("id") String id, @RequestBody CartItem cartItem) {
-        log.debug("Received request to add item to cart by id: {}", id);
+//    @RequestMapping(value = "/cart/{id}", method = RequestMethod.POST)
+//    public Cart cart(@PathVariable("id") String id, @RequestBody CartItem cartItem) {
+//        log.debug("Received request to add item to cart by id: {}", id);
+//        Cart cart = cartRepository.addToCart(id, cartItem);
+//        log.debug("Cart: {}", cart);
+//        return cart;
+//    }
+
+    @PostMapping("/cart/{id}")
+    public @ResponseBody
+    String addToCartId(@PathVariable("id") String id, @RequestBody CartItem cartItem){
         Cart cart = cartRepository.addToCart(id, cartItem);
-        log.debug("Cart: {}", cart);
-        return cart;
+        producer.getSource()
+                .output()
+                .send(MessageBuilder.withPayload(cart)
+                        .setHeader("type", "addToCartId")
+                        .build());
+
+        return "New Item Detail: " + cartItem.toString();
     }
 
-    @RequestMapping(value = "/cart", method = RequestMethod.POST)
-    public Cart cart(@RequestBody CartItem cartItem) {
-        log.debug("Received request to add item to cart without id.");
+//    @RequestMapping(value = "/cart", method = RequestMethod.POST)
+//    public Cart cart(@RequestBody CartItem cartItem) {
+//        log.debug("Received request to add item to cart without id.");
+//        Cart cart = cartRepository.addToCart(null, cartItem);
+//        log.debug("Cart: {}", cart);
+//        return cart;
+//    }
+
+    @PostMapping("/cart")
+    public @ResponseBody
+    String addToCart(@RequestBody CartItem cartItem){
         Cart cart = cartRepository.addToCart(null, cartItem);
-        log.debug("Cart: {}", cart);
-        return cart;
+        producer.getSource()
+                .output()
+                .send(MessageBuilder.withPayload(cart)
+                        .setHeader("type", "addToCart")
+                        .build());
+
+        return "New Item Detail: " + cartItem.toString();
     }
 
     @ExceptionHandler(Exception.class)
