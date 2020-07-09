@@ -20,7 +20,7 @@ import java.util.logging.Level;
 public class Consumer {
     private static final Logger logger = LoggerFactory.getLogger(Consumer.class);
 
-	@Autowired
+    @Autowired
     private CartRepository cartRepository;
 	
     @StreamListener(target = Sink.INPUT)

@@ -10,3 +10,23 @@ eureka:
 # HTTP (Tomcat) server port
 server:
   port: 9002
+
+spring:
+  cloud:
+    stream:
+      default-binder: kafka
+      kafka:
+        binder:
+          autoCreateTopics: true
+          # Change this configuration with your Apache Kafka location
+          brokers:
+            - localhost:9092
+      bindings:
+        # Write consumer/subscriber configuration on input section
+        input:
+          binder: kafka
+          # Change this configuration to meet your Kafka topic name
+          destination: ${TOPIC_NAME:products-topics}
+          # content-type supported for POJO is application/json
+          content-type: application/json
+          group: cart-group
