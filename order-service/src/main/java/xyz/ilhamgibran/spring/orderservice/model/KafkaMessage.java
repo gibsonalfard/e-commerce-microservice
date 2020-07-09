@@ -1,7 +1,10 @@
 package xyz.ilhamgibran.spring.orderservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class KafkaMessage {
-    private ObjectId _id;
+    private ObjectId id;
     private String name;
     private String description;
     private float price;
@@ -14,11 +17,11 @@ public class KafkaMessage {
     }
 
     public ObjectId getId() {
-        return _id;
+        return id;
     }
 
     public void setId(ObjectId _id) {
-        this._id = _id;
+        this.id = _id;
     }
 
     public String getName() {

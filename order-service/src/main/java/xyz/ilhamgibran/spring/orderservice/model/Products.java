@@ -8,7 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class Products{
     @Id
-    private String _id;
+    private Long _id;
     private String name;
     private String description;
     private float price;
@@ -68,11 +68,11 @@ public class Products{
         this.url = url;
     }
 
-    public String getId() {
+    public Long getId() {
         return _id;
     }
 
-    public void setId(String _id) {
+    public void setId(Long _id) {
         this._id = _id;
     }
 }

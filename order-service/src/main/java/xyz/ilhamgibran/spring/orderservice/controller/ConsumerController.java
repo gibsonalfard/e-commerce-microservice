@@ -10,10 +10,8 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
 
 import org.springframework.integration.kafka.dsl.Kafka;
-import xyz.ilhamgibran.spring.orderservice.model.KafkaMessage;
-import xyz.ilhamgibran.spring.orderservice.model.OrderProducts;
-import xyz.ilhamgibran.spring.orderservice.model.Orders;
-import xyz.ilhamgibran.spring.orderservice.model.Products;
+import org.springframework.messaging.handler.annotation.Payload;
+import xyz.ilhamgibran.spring.orderservice.model.*;
 import xyz.ilhamgibran.spring.orderservice.repository.OrderProductsRepository;
 import xyz.ilhamgibran.spring.orderservice.repository.OrdersRepository;
 import xyz.ilhamgibran.spring.orderservice.repository.ProductsRepository;
@@ -31,7 +29,7 @@ public class ConsumerController {
 
     private Products convertToProduct(KafkaMessage km){
         Products prod = new Products();
-        prod.setId(km.getId().getTimestamp().toString());
+        prod.setId(km.getId().getTimestamp());
         prod.setName(km.getName());
         prod.setUrl(km.getUrl());
         prod.setPrice(km.getPrice());
@@ -46,10 +44,18 @@ public class ConsumerController {
     @StreamListener(target = Sink.INPUT, condition = "headers['type']=='product-insert'")
     public void consumeInsert(String message){
         try {
-            double total = 0;
-//            Products prod = new ObjectMapper().readValue(message, Products.class);
             KafkaMessage mes = new ObjectMapper().readValue(message, KafkaMessage.class);
-            logger.info("This is ID of Data : " + mes.getId());
+//            {"_id":{"timestamp":1594329363,"date":"2020-07-09T21:16:03.000+00:00"}
+            // Object ID cannot be mapped, so i separate ObjectId Mapping
+            if(mes.getId() == null){
+                String msgSub = message.substring(7,70);
+                ObjectId obj = new ObjectMapper().readValue(msgSub, ObjectId.class);
+                System.out.println(obj == null ? "NULL lagi" : obj.getTimestamp());
+
+                logger.info("This is Name of Data : " + msgSub);
+                mes.setId(obj);
+            }
+            System.out.println(mes.getId() == null ? "null" : mes.getId().getTimestamp());
 
             Products prod = this.convertToProduct(mes);
 
