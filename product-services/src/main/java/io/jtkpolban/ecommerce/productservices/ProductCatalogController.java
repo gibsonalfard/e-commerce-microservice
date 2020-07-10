@@ -64,13 +64,12 @@ public class ProductCatalogController {
     String insertProduct(@RequestBody Product newProduct){
         ProductData productData = new ProductData();
         this.productRepository.save(newProduct)
-        .subscribe(productData::setProductData);
-
-        producer.getSource()
+        .subscribe( product->
+                producer.getSource()
                 .output()
-                .send(MessageBuilder.withPayload(productData)
+                .send(MessageBuilder.withPayload(product)
                         .setHeader("type", "product-insert")
-                        .build());
+                        .build()));
 
         return "New Product Detail: " + newProduct.toString() ;
     }
