@@ -77,6 +77,11 @@ services:
     ports:
      - "9007:9007"
      - "4447:4447"
+     environment: 
+      - EUREKA_HOST=discovery-microservice
+      - EUREKA_PORT=8001
+      - MONGO_HOST=mongodb
+      - KAFKA_HOST=kafka
     depends_on:
      - discovery-microservice
      - configuration-microservice
