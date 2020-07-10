@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3"
 services:
   zookeeper:
     image: 'bitnami/zookeeper:latest'
@@ -30,14 +30,14 @@ services:
     depends_on:
      - discovery-microservice
 
-  redis:
-    build: ./redis
-    ports:
-      - "6379:6379"
+#  redis:
+#    build: ./redis
+#    ports:
+#      - "6379:6379"
 
   mongodb:
     build: ./mongodb
-    container_name: "mongodb"
+    container_name: "mongodb_1"
     ports:
      - "27017:27017"
 
@@ -49,28 +49,28 @@ services:
      - discovery-microservice
      - configuration-microservice
 
-  cart-microservice:
-    build: ./cart-microservice
-    ports:
-     - "9002:9002"
-    depends_on:
-     - discovery-microservice
-     - configuration-microservice
-     - gateway-microservice
-     - redis
+#  cart-microservice:
+#    build: ./cart-microservice
+#    ports:
+#     - "9002:9002"
+#    depends_on:
+#     - discovery-microservice
+#     - configuration-microservice
+#     - gateway-microservice
+#     - redis
 
-  product-catalog-microservice:
-    build: ./product-catalog-microservice
-    ports:
-     - "9001:9001"
-     - "4444:4444"
-    depends_on:
-     - discovery-microservice
-     - configuration-microservice
-     - gateway-microservice
-     - mongodb
-    links:
-     - mongodb
+#  product-catalog-microservice:
+#    build: ./product-catalog-microservice
+#    ports:
+#     - "9001:9001"
+#     - "4444:4444"
+#    depends_on:
+#     - discovery-microservice
+#     - configuration-microservice
+#     - gateway-microservice
+#     - mongodb
+#    links:
+#     - mongodb
   
   product-services:
     build: ./product-services
@@ -85,31 +85,31 @@ services:
     links:
      - mongodb
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
-    container_name: elasticsearch
-    environment:
-      - node.name=elasticsearch
-      - cluster.name=es-docker-cluster
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    ports:
-      - 9200:9200
-      - 9300:9300
+#  elasticsearch:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+#    container_name: elasticsearch
+#    environment:
+#      - node.name=elasticsearch
+#      - cluster.name=es-docker-cluster
+#      - discovery.type=single-node
+#      - bootstrap.memory_lock=true
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
 
-  product-search-service:
-    build: ./product-search-service
-    ports:
-      - 9008:9008
-      - 4448:4448
-    depends_on:
-      - product-services
-      - discovery-microservice
-      - configuration-microservice
-      - gateway-microservice
-      - elasticsearch
+#  product-search-service:
+#    build: ./product-search-service
+#    ports:
+#      - 9008:9008
+#      - 4448:4448
+#    depends_on:
+#      - product-services
+#      - discovery-microservice
+#      - configuration-microservice
+#      - gateway-microservice
+#      - elasticsearch
