@@ -1,17 +1,17 @@
 buildscript {
     ext {
-        springBootVersion = '1.4.1.RELEASE'
+        springBootVersion = '2.3.1.RELEASE'
     }
     repositories {
         mavenCentral()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath "io.spring.gradle:dependency-management-plugin:0.6.1.RELEASE"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.9.RELEASE"
     }
 }
 
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 jar {
@@ -22,24 +22,26 @@ jar {
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Brixton.SR5'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR6'
     }
 }
 
 dependencies {
     compile('org.springframework.cloud:spring-cloud-starter-config')
-    compile('org.springframework.cloud:spring-cloud-starter-eureka')
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-cache")
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-stream', version: '1.2.2.RELEASE'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-stream-kafka', version: '1.0.3.RELEASE'
-    compile group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.2.7.RELEASE'
+    compile group: 'org.apache.kafka',name:'kafka-streams'
+    compile group: 'org.springframework.cloud',name:'spring-cloud-stream'
+    compile group: 'org.springframework.cloud',name:'spring-cloud-stream-binder-kafka'
+    compile group: 'org.springframework.cloud',name:'spring-cloud-stream-binder-kafka-streams'
+    compile group: 'org.springframework.kafka',name:'spring-kafka'
     compile group: 'org.springframework.data', name: 'spring-data-redis', version: '1.7.5.RELEASE'
     compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.9'
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.9'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.0'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.0'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.0'
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.cloud:spring-cloud-starter-eureka-server')
 }
