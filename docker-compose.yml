@@ -30,10 +30,10 @@ services:
     depends_on:
      - discovery-microservice
 
-  redis:
-    build: ./redis
-    ports:
-      - "6379:6379"
+  # redis:
+  #   build: ./redis
+  #   ports:
+  #     - "6379:6379"
 
   mongodb:
     build: ./mongodb
@@ -49,35 +49,35 @@ services:
      - discovery-microservice
      - configuration-microservice
 
-  cart-microservice:
-    build: ./cart-microservice
-    ports:
-     - "9002:9002"
-    depends_on:
-     - discovery-microservice
-     - configuration-microservice
-     - gateway-microservice
-     - redis
+  # cart-microservice:
+  #   build: ./cart-microservice
+  #   ports:
+  #    - "9002:9002"
+  #   depends_on:
+  #    - discovery-microservice
+  #    - configuration-microservice
+  #    - gateway-microservice
+  #    - redis
 
-  product-catalog-microservice:
-    build: ./product-catalog-microservice
-    ports:
-     - "9001:9001"
-     - "4444:4444"
-    depends_on:
-     - discovery-microservice
-     - configuration-microservice
-     - gateway-microservice
-     - mongodb
-    links:
-     - mongodb
+  # product-catalog-microservice:
+  #   build: ./product-catalog-microservice
+  #   ports:
+  #    - "9001:9001"
+  #    - "4444:4444"
+  #   depends_on:
+  #    - discovery-microservice
+  #    - configuration-microservice
+  #    - gateway-microservice
+  #    - mongodb
+  #   links:
+  #    - mongodb
   
   product-services:
     build: ./product-services
     ports:
      - "9007:9007"
      - "4447:4447"
-     environment: 
+    environment:
       - EUREKA_HOST=discovery-microservice
       - EUREKA_PORT=8001
       - MONGO_HOST=mongodb
@@ -90,45 +90,48 @@ services:
     links:
      - mongodb
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
-    container_name: elasticsearch
-    environment:
-      - node.name=elasticsearch
-      - cluster.name=es-docker-cluster
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    ports:
-      - 9200:9200
-      - 9300:9300
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+  #   container_name: elasticsearch
+  #   environment:
+  #     - node.name=elasticsearch
+  #     - cluster.name=es-docker-cluster
+  #     - discovery.type=single-node
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   ports:
+  #     - 9200:9200
+  #     - 9300:9300
 
-  product-search-service:
-    build: ./product-search-service
-    ports:
-      - 9008:9008
-      - 4448:4448
-    depends_on:
-      - product-services
-      - discovery-microservice
-      - configuration-microservice
-      - gateway-microservice
-      - elasticsearch
+  # product-search-service:
+  #   build: ./product-search-service
+  #   ports:
+  #     - 9008:9008
+  #     - 4448:4448
+  #   depends_on:
+  #     - product-services
+  #     - discovery-microservice
+  #     - configuration-microservice
+  #     - gateway-microservice
+  #     - elasticsearch
   
   mysql:
     image: mysql:5.7.30
     environment: 
       - MYSQL_DATABASE=ecommerce
+      - MYSQL_ROOT_PASSWORD=orderdisini
 
   order-service:
     build: ./order-service
-    ports: 8082:8082
+    ports: 
+      - 8082:8082
     environment: 
       - MYSQL_HOST=mysql
+      - MYSQL_PASSWORD=orderdisini
       - KAFKA_HOST=kafka
     depends_on:
       - mysql
