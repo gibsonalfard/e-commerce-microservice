@@ -13,6 +13,8 @@ server:
 
 #Connect to MongoServer
 spring:
+  kafka:
+    bootstrap-server: kafka:9092
   data:
     mongodb:
       host: mongodb
@@ -24,17 +26,17 @@ spring:
       default-binder: kafka
       kafka:
           binder:
+            autoCreateTopics: true
             brokers:
-                - localhost:9092
+                - ${KAFKA_HOST:localhost}:${KAFKA_PORT:9092}
       bindings:
         input:
           binder: kafka
-          destination: product-topics
+          destination: ${TOPIC_NAME:product-topic}
           content-type: application/json
           group: product-input-group
         output:
           binder: kafka
-          destination: product-topics
+          destination: ${TOPIC_NAME:product-topic}
           group: product-output-group
           content-type: application/json
-        
