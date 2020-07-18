@@ -8,3 +8,4 @@ classes/
 .classpath
 bin/
 .settings/
+/.nb-gradle/

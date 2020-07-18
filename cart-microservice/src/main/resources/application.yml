@@ -30,3 +30,8 @@ spring:
           # content-type supported for POJO is application/json
           content-type: application/json
           group: cart-group
+        output:
+          binder: kafka
+          destination: cart-topics
+          content-type: application/json
+          group: input-group-1
