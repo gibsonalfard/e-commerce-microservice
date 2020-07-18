@@ -13,7 +13,8 @@ insert_product({
     "price": 29999.00,
     "currency": "INR",
     "image": "img/01.jpg",
-    "url": "https://www.amazon.com/DJI-Phantom-Standard-Quadcopter-Camera/dp/B013U0F6EQ/"
+    "url": "https://www.amazon.com/DJI-Phantom-Standard-Quadcopter-Camera/dp/B013U0F6EQ/",
+    "hit": 0
 });
 insert_product({
     "_id": ObjectId("581d772dfed7620ee89936de"),
@@ -22,7 +23,8 @@ insert_product({
     "price": 24999.00,
     "currency": "INR",
     "image": "img/02.jpg",
-    "url": "https://www.amazon.com/Autel-Robotics-X-Star-Camera-Orange/dp/B01B1H80K2/"
+    "url": "https://www.amazon.com/Autel-Robotics-X-Star-Camera-Orange/dp/B01B1H80K2/",
+    "hit": 0
 });
 insert_product({
     "_id": ObjectId("57a98d98e4b00679b4a830b5"),
@@ -31,7 +33,8 @@ insert_product({
     "price": 19000.00,
     "currency": "INR",
     "image": "img/03.jpg",
-    "url": "https://www.amazon.com/UPair-Transmit-Controller-Function-Beginners/dp/B01FSL5Q6S"
+    "url": "https://www.amazon.com/UPair-Transmit-Controller-Function-Beginners/dp/B01FSL5Q6S",
+    "hit": 0
 });
 //pass passsord
 print("_______PRODUCTS DATA_______");

@@ -19,11 +19,10 @@ public class Product {
     private String currency;
     private String image;
     private String url;
-
+    private int hit;
 
 //    @Field("published") //gunakan untuk different field name
 //    private LocalDate publicationDate;
-
     public void set_id(ObjectId id) {
         _id = id;
     }

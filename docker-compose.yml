@@ -1,23 +1,38 @@
-version: "3.8"
+version: "3"
 services:
   zookeeper:
-    image: 'bitnami/zookeeper:latest'
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-  kafka:
-    image: 'bitnami/kafka:latest'
+    image: wurstmeister/zookeeper
     ports:
-      - 9092:9092
+      - "2181:2181"
+    #environment:
+      #- ALLOW_ANONYMOUS_LOGIN=yes
+  #kafka:
+   # image: 'wurstmeister/kafka:latest'
+    #ports:
+     # - "9092:9092"
+    #environment:
+      #KAFKA_LISTENERS: OUTSIDE://kafka:9092,INSIDE://localhost:9093
+      #KAFKA_ADVERTISED_LISTENERS: OUTSIDE://kafka:9092,INSIDE://localhost:9093
+      #KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: OUTSIDE:PLAINTEXT,INSIDE:PLAINTEXT
+      #KAFKA_INTER_BROKER_LISTENER_NAME: OUTSIDE
+     # KAFKA_ADVERTISED_HOST_NAME: kafka
+      #KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      #KAFKA_CREATE_TOPICS: "product-topic:5:1"
+      #ALLOW_PLAINTEXT_LISTENER: 'yes'
+    #depends_on:
+     # - zookeeper
+     
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
     environment:
-      KAFKA_LISTENERS: OUTSIDE://kafka:9092,INSIDE://localhost:9093
-      KAFKA_ADVERTISED_LISTENERS: OUTSIDE://kafka:9092,INSIDE://localhost:9093
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: OUTSIDE:PLAINTEXT,INSIDE:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: OUTSIDE
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_CREATE_TOPICS: "product-topic:3:1"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      ALLOW_PLAINTEXT_LISTENER: 'yes'
-    depends_on:
-      - zookeeper
-
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      
   discovery-microservice:
     build: ./discovery-microservice
     ports:
@@ -30,14 +45,21 @@ services:
     depends_on:
      - discovery-microservice
 
+<<<<<<< HEAD
   # redis:
   #   build: ./redis
   #   ports:
   #     - "6379:6379"
+=======
+#  redis:
+#    build: ./redis
+#    ports:
+#      - "6379:6379"
+>>>>>>> consume-product
 
   mongodb:
     build: ./mongodb
-    container_name: "mongodb"
+    container_name: "mongodb_1"
     ports:
      - "27017:27017"
 
@@ -49,6 +71,7 @@ services:
      - discovery-microservice
      - configuration-microservice
 
+<<<<<<< HEAD
   # cart-microservice:
   #   build: ./cart-microservice
   #   ports:
@@ -71,6 +94,30 @@ services:
   #    - mongodb
   #   links:
   #    - mongodb
+=======
+#  cart-microservice:
+#    build: ./cart-microservice
+#    ports:
+#     - "9002:9002"
+#    depends_on:
+#     - discovery-microservice
+#     - configuration-microservice
+#     - gateway-microservice
+#     - redis
+
+#  product-catalog-microservice:
+#    build: ./product-catalog-microservice
+#    ports:
+#     - "9001:9001"
+#     - "4444:4444"
+#    depends_on:
+#     - discovery-microservice
+#     - configuration-microservice
+#     - gateway-microservice
+#     - mongodb
+#    links:
+#     - mongodb
+>>>>>>> consume-product
   
   product-services:
     build: ./product-services
@@ -87,9 +134,11 @@ services:
      - configuration-microservice
      - gateway-microservice
      - mongodb
+     - kafka
     links:
      - mongodb
 
+<<<<<<< HEAD
   # elasticsearch:
   #   image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
   #   container_name: elasticsearch
@@ -137,3 +186,33 @@ services:
       - mysql
       - zookeeper
       - kafka
+=======
+#  elasticsearch:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+#    container_name: elasticsearch
+#    environment:
+#      - node.name=elasticsearch
+#      - cluster.name=es-docker-cluster
+#      - discovery.type=single-node
+#      - bootstrap.memory_lock=true
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
+
+#  product-search-service:
+#    build: ./product-search-service
+#    ports:
+#      - 9008:9008
+#      - 4448:4448
+#    depends_on:
+#      - product-services
+#      - discovery-microservice
+#      - configuration-microservice
+#      - gateway-microservice
+#      - elasticsearch
+>>>>>>> consume-product
