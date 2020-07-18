@@ -58,6 +58,7 @@ public class ConsumerController {
                 mes.setId(setObjFromString(message));
             }
             System.out.println(mes.getId() == null ? "null" : mes.getId().getTimestamp());
+            logger.info("From Kafka : " + message);
             Products prod = this.convertToProduct(mes);
 
             productsRepository.save(prod);
